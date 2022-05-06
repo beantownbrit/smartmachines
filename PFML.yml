@@ -9,13 +9,14 @@ metadata:
   authors:
     - name: Brittany Correia
   organization: SULS
+  revision_date: 2022-05-06
 
 #labels
   continue button label: |
     Next
   footer: |
     ![Prosody Law logo](https://www.prosodylaw.com/assets/img/pllogo_small.png)
---- 
+---
 features:
   progress bar: True
 ---
@@ -33,7 +34,7 @@ subquestion: |
   1. Answer questions that will prepare an email to send to Prosody Law.
   2. Preview your information.
   3. Send the email to Prosody Law. You will also receive a copy of your answers.
-  
+ 
   Click the {green words} or help bubbles that appear on any screen for a definition or more information.
 
 fields:
@@ -60,12 +61,12 @@ mandatory: True
 question: |
   About Paid Family and Medical Leave in Massachusetts
 subquestion: |
-  Paid family and medical leave (PFML) is a program designed to help people in Massachusetts take paid time off of work for family or medical reasons. As soon as you notify your employer that you are applying to take paid family or medical leave, certain protections begin. 
+  Paid family and medical leave (PFML) is a program designed to help people in Massachusetts take paid time off of work for family or medical reasons. As soon as you notify your employer that you are applying to take paid family or medical leave, certain protections begin.
 
   Generally, an employee who has taken paid family or medical leave must be restored to the employee’s previous position or to an equal position, with the same status, pay, employment benefits, length-of-service credit, and seniority as of the date of leave.
 
   This form will help you determine:
-  
+ 
   * If you are a {covered individual}
   * If the reason for leave offers job protections
   * If your employer may have violated your rights under Massachusetts law
@@ -84,7 +85,7 @@ fields:
   - First name: user.name.first
     required: True  
   - Last name: user.name.last
-    required: True 
+    required: True
   - Preferred name: user.name.pref
     hint: if different than your first name
     required: False
@@ -213,7 +214,7 @@ continue button field: user_retaliation
 id: DFML
 mandatory: True
 question: |
-  The Massachusetts Department of Family and Medical Leave (DFML) oversees paid leave programs, including possible job retaliation. 
+  The Massachusetts Department of Family and Medical Leave (DFML) oversees paid leave programs, including possible job retaliation.
 fields:
     - "Have you filed a complaint against ${ employer } with DFML?": user.complaint
       datatype: yesnoradio
@@ -236,8 +237,9 @@ subquestion: |
   Please provide the following information so Prosody Law can contact you.
 fields:
   - "Phone number": user.phone
-    required: False
+    required: True
   - "Email": user.email
+    datatype: email
     required: True
   - "Is there anything else you would like Prosody Law to know?": user.additionalinfo
     datatype: area
@@ -250,40 +252,23 @@ validation code: |
 
 continue button field: user_info
 ---
-id: send email
-mandatory: user_info == True
 question: |
-  Review your information and send to Prosody Law
-subquestion: |
-  Test
-    
-fields:
-  - I am ready to send.: ready_to_send
-    datatype: checkboxes
-    none of the above: False    
-    minlength: 1
-    choices:
-      - I have reviewed my information and it is accurate.
-    validation messages:
-      minlength: |
-        You cannot continue unless you agree your information is accurate.    
-  
-continue button field: user_send
-continue button label: Send email
+  Do you want a confirmation e-mail?
+yesno: user.ready_email
 ---
 id: email sent
-mandatory: true
+mandatory: True
 question: |
   E-mail sent
 subquestion: |
-  % if user_send and email_sent_ok:
-  The e-mail was sent successfully. Prosody Law will reach out to you within 72 hours with a response.
+  % if user.ready_email and email_sent_ok:
+  Thanks, ${ user }, the e-mail was sent successfully. 
+  Prosody Law will reach out to you within 72 hours with a response.
   % else:
   There was a problem sending the e-mail. Please go back and try again.
   % endif
----
-code: |
-  email_sent_ok = send_email(to='test <zbrittanyz@gmail.com>', template=notification)
+  
+progress: 100
 ---
 template: notification
 subject: |
@@ -291,19 +276,11 @@ subject: |
 content: |
   ${ user } has requested to speak with Prosody Law regarding job protections against retaliation after taking leave on ${ user.leavedate }.
   
-  Contact Information:
-  **Name:** ${ user.name.first } ${ user.name.last } 
-  **Preferred Name**: ${ user.name.pref }
-  **Email**: ${ user.email }
-  **Phone number**: ${ user.phone }
-  **Employment status**: ${ user.emptypecurrent } ${ user.emptypeprev }
-  **Employer**: ${ employer }
-  **Hire date**: ${ user.hiredate }
-  **Started leave on**: ${ user.leavedate }
-  **Gave ${ employer } notice of leave on**: ${ user.noticedate }
-  **Ended/will end leave on**: ${ user.leavedate }
-  **Reason for leave**: ${ user.reason }
-  **Form(s) of possible retaliation**: ${ user.retaliation.gathered }
-  **Date of first instance of possible retaliation**: ${ user.retaliationdate }
-  **Filed a complaint with DPFL**: ${ user.complaint } ${ user.complaintdate }
-  **Additional information**: ${ user.additionalinfo }
+  Contact Information
+  
+  Name: ${ user.name.first } ${ user.name.last }
+---
+mandatory: True
+code: |
+  email_sent_ok = send_email(to='test <zbrittanyz@gmail.com>', template=notification)
+  

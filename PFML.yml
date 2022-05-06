@@ -1,0 +1,309 @@
+---
+metadata:
+  title: |
+    Smart Machines Final Project - MA PFML Client Screening
+  short title: |
+    PFML
+  description: |
+    Massachusetts Paid Family and Medical Leave client screening app for Prosody Law. This interview was created in fulfillment of Suffolk Law's Smart Machines Spring 2022 final project requirement.
+  authors:
+    - name: Brittany Correia
+  organization: SULS
+
+#labels
+  continue button label: |
+    Next
+  footer: |
+    ![Prosody Law logo](https://www.prosodylaw.com/assets/img/pllogo_small.png)
+--- 
+features:
+  progress bar: True
+---
+objects:
+  - user: Individual
+  - employer: Individual
+---
+id: intro screen
+mandatory: True
+question: |
+  Paid Family and Medical Leave Employer Retaliation Questionnaire
+subquestion: |
+  This website can help you complete and submit a contact form in 3 steps:
+ 
+  1. Answer questions that will prepare an email to send to Prosody Law.
+  2. Preview your information.
+  3. Send the email to Prosody Law. You will also receive a copy of your answers.
+  
+  Click the {green words} or help bubbles that appear on any screen for a definition or more information.
+
+fields:
+  - To continue, you must accept the {terms of use}: acknowledged_information_use
+    datatype: checkboxes
+    none of the above: False    
+    minlength: 1
+    choices:
+      - I accept the terms of use.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree to the terms of use.        
+
+continue button field: basic_questions_intro_screen
+
+terms:
+  green words: |
+    Green words are legal terms or a short way of referring to something that needs more explanation. The definition or explanation pops up when you tap the green words.
+  terms of use: |
+    This site does not provide legal advice. Use of this site does not create an attorney-client relationship and does not mean that you have a lawyer.
+---
+id: about
+mandatory: True
+question: |
+  About Paid Family and Medical Leave in Massachusetts
+subquestion: |
+  Paid family and medical leave (PFML) is a program designed to help people in Massachusetts take paid time off of work for family or medical reasons. As soon as you notify your employer that you are applying to take paid family or medical leave, certain protections begin. 
+
+  Generally, an employee who has taken paid family or medical leave must be restored to the employee’s previous position or to an equal position, with the same status, pay, employment benefits, length-of-service credit, and seniority as of the date of leave.
+
+  This form will help you determine:
+  
+  * If you are a {covered individual}
+  * If the reason for leave offers job protections
+  * If your employer may have violated your rights under Massachusetts law
+
+terms:
+  covered individual: |
+    Generally, a worker qualifies as a covered individual eligible for paid family and medical leave benefits if the worker is covered by unemployment insurance in Massachusetts and paid wages by a Massachusetts employer.
+
+continue button field: intro_screen_seen
+---
+id: user name
+mandatory: True
+question: |
+  What is your name?
+fields:
+  - First name: user.name.first
+    required: True  
+  - Last name: user.name.last
+    required: True 
+  - Preferred name: user.name.pref
+    hint: if different than your first name
+    required: False
+      
+continue button field: user_name
+---
+id: about employer
+mandatory: True
+question: |
+  Tell us about your employment
+fields:
+  - "Are you currently working for an {employer} located in Massachusetts?": user.current
+    datatype: yesnoradio
+  - "Were you previously working for an {employer} located in Massachusetts?": user.prev
+    datatype: yesnoradio
+    js show if: |
+      val('user.current') == false
+  - "What is the name of your employer?": employer.name
+  - "What is the nature of your employment?": user.emptypecurrent
+    datatype: radio
+    choices:
+      - Full-time: full
+      - Part-time: part
+      - Seasonal: seasonal
+      - Contractor: contractor
+      - Self-employed: self-em
+      - Other: other
+    js show if: |
+      val('user.current') == true
+  - "What was the nature of your employment?": user.emptypeprev
+    datatype: radio
+    choices:
+      - Full-time
+      - Part-time
+      - Seasonal
+      - Contractor
+      - Self-employed
+      - Other
+    js show if: |
+      val('user.prev') == true
+      
+continue button field: user_emp
+
+terms:
+  employer: |
+    A private business or [state agency](https://www.mass.gov/info-details/massachusetts-state-organizations-a-to-z).
+---
+id: dates
+mandatory: True
+question: |
+  Tell us about your employment
+fields:
+  - "When did you begin your employment at ${ employer }?": user.hiredate
+    datatype: date
+  - "Did you give {notice} to ${ employer } about your leave?": user.notice
+    datatype: yesnoradio
+  - "When did you notify ${ employer } about your leave?": user.noticedate
+    datatype: date
+    js show if: |
+      val('user.notice') == true
+
+terms:
+  notice: |
+    Notice is telling employers the anticipated starting date of any leave, the anticipated length of the leave and the expected date of return.
+    
+continue button field: user_dates
+---
+id: leave
+mandatory: True
+question: |
+  Tell us about your leave
+fields:
+  - "When did you begin your leave?": user.leavedate
+    datatype: date
+  - "What was the reason for your leave?": user.reason
+    datatype: radio
+    choices:
+      - "Sought treatment or recovery from a *serious health condition* for myself": self
+        help: |
+          A serious health condition is an illness, injury, impairment or physical or mental condition that involves inpatient care in a hospital, hospice, or residential medical facility. It is also continuing treatment by a health care provider.
+      - "Provided care to a *family member* with a serious health condition": fam_health
+        help: |
+          Family members include: spouse, domestic partner, child, parent, grandchild, grandparent, sibling. parent of your spouse or domestic partner, or a person who stood in loco parentis to you when you were a minor child.    
+      - "Bonded with a child during the first 12 months of a birth, adoption, or foster placement": fam_bond
+      - "Provided care to a family member who is a *covered servicemember*": fam_milhealth
+        help: |
+          A covered servicemember is a member of the United States Armed Forces, National Guard, or Reserves.
+      - "A qualifying exigency related to a family member who is a covered servicemember": fam_milex
+        help: |
+          A qualifying exigency is a need arising out of a covered individual’s family member’s active duty service or notice of an impending call or order to active duty in the Armed Forces, including, but not limited to, providing for the care or other needs of the military member’s child or other family member, making financial or legal arrangements for the military member, attending counseling, attending military events or ceremonies, spending time with the military member during a rest and recuperation leave or following return from deployment or making arrangements following the death of the military member.
+      - "Other": other
+  - "When did you return, attempt to return, or plan to return to work at ${ employer } ?": returndate
+    datatype: date
+
+continue button field: user_leave
+---
+id: retaliation
+mandatory: True
+question: |
+  Retaliation against you
+fields:
+  - "At any time after taking paid leave, has ${ employer }...?": user.retaliation
+    datatype: checkboxes
+    choices:  
+      - "Fired you": fire
+      - "Disciplined you": discipline
+      - "Suspended you": suspend
+      - "Asked you to resign": resign
+      - "Demoted you": demote
+      - "Threatened you": threat
+      - "Discriminated against you": discriminate
+      - "Reduced your pay": reducepay
+      - "Laid you off": layoff
+      - "Reduced, paused, or stopped any of your benefits": benefits
+        help: |
+          Examples of benefits include the ability to earn sick time, seniority, or bonuses.
+      - "Stop or reduce your health insurance: insurance": insurance
+        help: |
+          Employers must continue to provide for and contribute to employees' employment-related health insurance benefits, if any, at the level and under the conditions coverage would have been provided if the employees had continued working for the duration of such leave.
+      - "Other": other
+  - "When did ${ employer.name } first do any of the above?": user.retaliationdate
+    datatype: date
+
+continue button field: user_retaliation
+---
+id: DFML
+mandatory: True
+question: |
+  The Massachusetts Department of Family and Medical Leave (DFML) oversees paid leave programs, including possible job retaliation. 
+fields:
+    - "Have you filed a complaint against ${ employer } with DFML?": user.complaint
+      datatype: yesnoradio
+    - "When did you file your complaint with DFML?": user.complaintdate
+      datatype: date
+      js show if: |
+        val('user.complaint') == true
+    - "Did ${ employer } threaten or take any action against you after you filed your complaint with DFML?": user.retaliationcomplaint
+      datatype: yesnoradio
+      js show if: |
+        val('user.complaint') == true
+
+continue button field: user_complaintfiled
+---
+id: contact info
+mandatory: True
+question: |
+  Contact information
+subquestion: |
+  Please provide the following information so Prosody Law can contact you.
+fields:
+  - "Phone number": user.phone
+    required: False
+  - "Email": user.email
+    required: True
+  - "Is there anything else you would like Prosody Law to know?": user.additionalinfo
+    datatype: area
+    required: False
+
+validation code: |
+  if (not showifdef('user.phone') and \
+      (not showifdef('user.email'))):
+    validation_error(word("You need to provide at least one contact method."))
+
+continue button field: user_info
+---
+id: send email
+mandatory: user_info == True
+question: |
+  Review your information and send to Prosody Law
+subquestion: |
+  Test
+    
+fields:
+  - I am ready to send.: ready_to_send
+    datatype: checkboxes
+    none of the above: False    
+    minlength: 1
+    choices:
+      - I have reviewed my information and it is accurate.
+    validation messages:
+      minlength: |
+        You cannot continue unless you agree your information is accurate.    
+  
+continue button field: user_send
+continue button label: Send email
+---
+id: email sent
+mandatory: true
+question: |
+  E-mail sent
+subquestion: |
+  % if user_send and email_sent_ok:
+  The e-mail was sent successfully. Prosody Law will reach out to you within 72 hours with a response.
+  % else:
+  There was a problem sending the e-mail. Please go back and try again.
+  % endif
+---
+code: |
+  email_sent_ok = send_email(to='test <zbrittanyz@gmail.com>', template=notification)
+---
+template: notification
+subject: |
+  Prosody Law PFML Employer Retaliation Questionnaire from: ${ user }
+content: |
+  ${ user } has requested to speak with Prosody Law regarding job protections against retaliation after taking leave on ${ user.leavedate }.
+  
+  Contact Information:
+  **Name:** ${ user.name.first } ${ user.name.last } 
+  **Preferred Name**: ${ user.name.pref }
+  **Email**: ${ user.email }
+  **Phone number**: ${ user.phone }
+  **Employment status**: ${ user.emptypecurrent } ${ user.emptypeprev }
+  **Employer**: ${ employer }
+  **Hire date**: ${ user.hiredate }
+  **Started leave on**: ${ user.leavedate }
+  **Gave ${ employer } notice of leave on**: ${ user.noticedate }
+  **Ended/will end leave on**: ${ user.leavedate }
+  **Reason for leave**: ${ user.reason }
+  **Form(s) of possible retaliation**: ${ user.retaliation.gathered }
+  **Date of first instance of possible retaliation**: ${ user.retaliationdate }
+  **Filed a complaint with DPFL**: ${ user.complaint } ${ user.complaintdate }
+  **Additional information**: ${ user.additionalinfo }

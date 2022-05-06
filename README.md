@@ -1,2 +1,5 @@
-# smartmachines
-22SP
+# Smart Machines Spring 2022 - Final Project
+A client intake app for Prosody Law that screens clients who may qualify was aggreived employees under the Massachusetts Paid Family and Medical Leave Act. This interview was created in fulfillment of Suffolk Law's Smart Machines Spring 2022 final project requirement.
+# Research 
+This app guides those who believe they may have been retaliated against due to taking paid leave as allowed under the [Massachusetts Paid Family and Medical Leave Act](https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXXII/Chapter175M). While passed in 2018, the substance of the act - including protections for employees against retaliatory actions by their employer - went into effect on January 1, 2021. This app uses Chapter 175M Sections 9(c) and (d) to form the framework of the app. I also included language found in the [poster](https://www.mass.gov/service-details/notice-and-acknowledgement-for-the-paid-family-and-medical-leave-pfml-law-for-executive-department-employees) covered employers are legally required to post conspicuously in the workplace.
+# 
